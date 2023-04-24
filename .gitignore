@@ -1,3 +1,7 @@
+# Builds of Data files
+_fb0x0*
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
