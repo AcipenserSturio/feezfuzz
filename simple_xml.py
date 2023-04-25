@@ -10,6 +10,7 @@ from defines import (
     SPELL_CLASSES,
     SLOT_NAMES,
     CARD_TYPES,
+    INSTRUCTIONS,
 )
 
 class Byte:
@@ -88,11 +89,17 @@ class Script:
 
 class Command:
     def __init__(self, string):
-        self.arguments = string.split(".")
-        self.instruction = self.arguments.pop(0)
+        if string.replace("\0", ""):
+            self.arguments = string.split(".")
+            self.instruction = INSTRUCTIONS[self.arguments.pop(0)]
+        else:
+            self.arguments = []
+            self.instruction = None
 
     def xml(self):
         element = ET.Element("Command")
+        if not self.instruction:
+            return element
         element.append(ET.Element("Instruction", text=f"{self.instruction}"))
         for arg in self.arguments:
             element.append(ET.Element("Arg", text=f"{arg}"))
