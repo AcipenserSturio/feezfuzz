@@ -12,9 +12,7 @@ Python 3.10 (lower versions might work, but are not tested)
 
 Currently available scripts are work in progress - they may be clunky to use.
 
-`python simple_json.py`
-
-`python simple_xml.py`
+`python main.py`
 
 Make sure to change the path to Zanzarah folder to whatever your path is.
 
