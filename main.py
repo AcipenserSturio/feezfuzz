@@ -7,6 +7,9 @@ from src.nodes.table import Table
 
 if __name__ == "__main__":
     DATA_PATH = Path("../Zanzarah/Data/")
+    BUILD_PATH = Path("./build")
+    BUILD_PATH.mkdir(exist_ok=True)
+
     for filepath in DATA_PATH.glob("*.fbs"):
         with open(filepath, "rb") as f:
             if filepath.stem == "_fb0x00":
@@ -14,4 +17,4 @@ if __name__ == "__main__":
             else:
                 tree = ET.ElementTree(Table(f).xml())
             ET.indent(tree, space = "  ")
-            tree.write(filepath.stem + ".xml", encoding="utf8")
+            tree.write(BUILD_PATH / (filepath.stem + ".xml"), encoding="utf8")
