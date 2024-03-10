@@ -8,9 +8,9 @@ class String:
     def __init__(self, f):
         # pascal-like. the first 4 bytes are string length. not null terminated.
         length = Uint(f).value
-        self.value = struct.unpack(f"<{length}s", f.read(length))[0].decode("cp1252")
+        self.value = struct.unpack(f"<{length}s", f.read(length))[0].decode("cp1252", "replace")
 
     def xml(self):
         element = ET.Element("String")
-        element.text = f"{self.value}"
+        element.text = self.value.replace('\0', '')
         return element
