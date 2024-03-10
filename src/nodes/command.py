@@ -4,6 +4,7 @@ from ..enums import INSTRUCTIONS
 
 from ..nodes.uint import Uint as Int
 from ..nodes.uuid import Uuid as Uid
+from ..nodes.string import String
 
 class Command:
     def __init__(self, string):
@@ -19,41 +20,42 @@ class Command:
                 # they are used extensively by vanilla
                 if (command_name != "J" and len(self.arguments) != 1):
                     print(f"Warning: malformed command {string}: {len(self.arguments)} args given, {arglen} expected")
-                self.arguments.extend([0, 0, 0])
-                self.arguments = self.arguments[:arglen]
+                self.arguments.extend(["0", "0", "0"])
+
+            self.arguments = self.parse_args(self.instruction, self.arguments)
 
         else:
             self.arguments = []
             self.instruction = None
 
-    def parse_args(instruction, args):
+    def parse_args(self, instruction, args):
         match instruction:
             case "say":
                 return [Uid(args.pop(0)), Int(args.pop(0))]
             case "setModel":
-                return
+                return [String(args.pop(0))]
             case "choice":
                 return [Int(args.pop(0)), Uid(args.pop(0))]
             case "waitForUser":
                 return []
             case "label":
-                return
+                return []
             case "setCamera":
                 return [Int(args.pop(0))]
             case "exit":
-                return
+                return []
             case "wizform":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "spell":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "else":
-                return
+                return []
             case "changeWaypoint":
                 return [Int(args.pop(0)), Int(args.pop(0))]
             case "fight":
                 return [Int(args.pop(0)), Int(args.pop(0))]
             case "lookAtPlayer":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))]
             case "changeDatabase":
                 return [Uid(args.pop(0))]
             case "removeNpc":
@@ -79,123 +81,128 @@ class Command:
             case "ifPlayerHasSpecials":
                 return [Int(args.pop(0)), Int(args.pop(0))]
             case "ifTriggerIsActive":
-                return
+                return [Int(args.pop(0))]
             case "removePlayerCards":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "moveSystem":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))]
             case "movementSpeed":
-                return
+                return [Int(args.pop(0))]
             case "modifyWizform":
                 return
             case "lockUserInput":
-                return
+                return [Int(args.pop(0))]
             case "modifyTrigger":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "playAnimation":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))]
             case "ifIsWizform":
                 return
             case "startPrelude":
-                return
+                return []
             case "npcWizFormEscapes":
-                return
-            case "dance":
-                return
+                return []
+            # case "dance":
+            #     return  # unclear
             case "setGlobal":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))] # unclear
             case "beginIf_global":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))] # unclear
             case "talk":
-                return
+                return [Uid(args.pop(0))]
             case "goto":
-                return
+                return [Int(args.pop(0))]
             case "gotoRandomLabel":
-                return
-            case "ask":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))]
+            # case "ask":
+            #     return  # What even is ask?
             case "chafferWizForms":
-                return
+                return [Uid(args.pop(0)), Uid(args.pop(0)), Uid(args.pop(0))]
             case "setNpcType":
-                return
+                return [Int(args.pop(0))]
             case "deployNpcAtTrigger":
-                return
+                if args[1] in ("0", "1"):
+                    return [Int(args.pop(0)), Uid(args.pop(0))]
+                else:
+                    return [Uid(args.pop(0)), Uid(args.pop(0))]
             case "delay":
-                return
+                return [Int(args.pop(0))]
             case "gotoLabelByRandom":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))]
             case "ifCloseToWaypoint":
-                return
+                return [Int(args.pop(0))]
             case "removeWizForms":
-                return
+                return []
             case "ifNpcModifierHasValue":
-                return
+                return [Int(args.pop(0))]
             case "setNpcModifier":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "defaultWizForm":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "idle":
-                return
+                return []
             case "ifPlayerIsClose":
-                return
+                return [Int(args.pop(0))]
             case "ifNumberOfNpcsIs":
-                return
+                return [Int(args.pop(0)), Uid(args.pop(0))]
             case "startEffect":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))]
             case "setTalkLabels":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "setCollision":
-                return
+                return [Int(args.pop(0))]
             case "tradeWizform":
-                return
+                return [Int(args.pop(0))]
             case "createDynamicItems":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "playVideo":
-                return
+                return [Int(args.pop(0))]
             case "removeNpcAtTrigger":
-                return
+                return [Int(args.pop(0))]
             case "revive":
-                return
+                return []
             case "lookAtTrigger":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))]
             case "ifTriggerIsEnabled":
-                return
+                return [Int(args.pop(0))]
             case "playSound":
-                return
+                return [Int(args.pop(0))]
             case "playInArena":
-                return
+                return [Int(args.pop(0))]
             case "startActorEffect":
-                return
+                return [Int(args.pop(0))]
             case "endActorEffect":
-                return
+                return []
             case "createSceneObjects":
-                return
-            case "evolveWizForm":
-                return
+                return [Int(args.pop(0))]
+            # case "evolveWizForm":
+            #     return # unclear
             case "removeBehavior":
-                return
+                return [Int(args.pop(0))]
             case "unlockDoor":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))]
             case "endGame":
-                return
+                return []
             case "defaultDeck":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "subGame":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "modifyEffect":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "playPlayerAnimation":
-                return
+                return [Int(args.pop(0))]
             case "playAmyVoice":
-                return
+                return [String(args.pop(0))]
             case "createDynamicModel":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0)), Int(args.pop(0))]
             case "deploySound":
-                return
+                return [Int(args.pop(0)), Int(args.pop(0))]
             case "givePlayerPresent":
-                return
+                return [Int(args.pop(0))]
             case "endIf":
-                return
+                return []
+            case _:
+                print(f"Malformed script: {instruction}")
 
 
     def xml(self):
@@ -203,6 +210,7 @@ class Command:
         if not self.instruction:
             return element
         element.append(ET.Element("Instruction", text=f"{self.instruction}"))
-        for arg in self.arguments:
-            element.append(ET.Element("Arg", text=f"{arg}"))
+        if self.arguments:
+            for arg in self.arguments:
+                element.append(arg.xml())
         return element
