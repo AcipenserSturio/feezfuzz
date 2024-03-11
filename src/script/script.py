@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 
 from .command import Command
-from .string import String
+from ..db.nodes.string import String
 
 
 class Script:
@@ -14,3 +14,6 @@ class Script:
         for item in self.commands:
             element.append(item.xml())
         return element
+
+    def toml(self):
+        return "\n".join([command.toml() for command in self.commands])

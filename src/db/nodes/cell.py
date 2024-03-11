@@ -3,7 +3,6 @@ import xml.etree.ElementTree as ET
 from .byte import Byte
 from .cardid import CardId
 from .level import Level
-from .script import Script
 from .string import String
 from .uint import Uint
 from .uuid import Uuid

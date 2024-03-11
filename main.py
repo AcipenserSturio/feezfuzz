@@ -5,6 +5,7 @@ import tomli_w
 
 from src.db.nodes.indextable import IndexTable
 from src.db.nodes.table import Table
+from src.script.script import Script
 
 
 def read_fbs(path: Path) -> IndexTable | Table:
@@ -47,11 +48,11 @@ if __name__ == "__main__":
         script = {
             "uid": hex(row.uid.value).upper()[2:],
             "name": hex(row.cells[0].item.uid.value).upper()[2:],
-            "Script1": row.cells[1].item.value[:-1],
-            "Script2": row.cells[2].item.value[:-1],
-            "Script3": row.cells[3].item.value[:-1],
-            "Script4": row.cells[4].item.value[:-1],
-            "Script5": row.cells[5].item.value[:-1],
+            "Script1": Script(row.cells[1].item.value[:-1]).toml(),
+            "Script2": Script(row.cells[2].item.value[:-1]).toml(),
+            "Script3": Script(row.cells[3].item.value[:-1]).toml(),
+            "Script4": Script(row.cells[4].item.value[:-1]).toml(),
+            "Script5": Script(row.cells[5].item.value[:-1]).toml(),
         }
         filename = row.cells[-1].item.value.replace('\0', '')
         with open((BUILD_PATH / "scripts" / f"{filename}.toml"), "wb") as f:

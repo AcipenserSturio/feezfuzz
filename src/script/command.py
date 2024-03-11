@@ -1,10 +1,21 @@
 import xml.etree.ElementTree as ET
 
-from ..enums import INSTRUCTIONS
+from .instructions import INSTRUCTIONS
 
-from ..nodes.uint import Uint as Int
-from ..nodes.uuid import Uuid as Uid
-from ..nodes.string import String
+
+def Uid(x):
+    int(x, 16) # check if string is hex value
+    return x
+
+
+def Int(x):
+    # int(x) # check if string is int
+    return x
+
+
+def String(x):
+    return x
+
 
 class Command:
     def __init__(self, string):
@@ -39,7 +50,7 @@ class Command:
             case "waitForUser":
                 return []
             case "label":
-                return []
+                return [Int(args.pop(0))]
             case "setCamera":
                 return [Int(args.pop(0))]
             case "exit":
@@ -204,7 +215,6 @@ class Command:
             case _:
                 print(f"Malformed script: {instruction}")
 
-
     def xml(self):
         element = ET.Element("Command")
         if not self.instruction:
@@ -214,3 +224,8 @@ class Command:
             for arg in self.arguments:
                 element.append(arg.xml())
         return element
+
+    def toml(self):
+        if not self.instruction:
+            return ""
+        return ".".join([self.instruction, *self.arguments])
