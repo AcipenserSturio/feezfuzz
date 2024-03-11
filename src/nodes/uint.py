@@ -13,7 +13,6 @@ class Uint:
             except ValueError:
                 self.value = 0
                 print(f"Warning: Malformed integer: {f}")
-
         else:
             raise TypeError(type(f))
 
