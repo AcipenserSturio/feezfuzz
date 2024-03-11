@@ -2,12 +2,13 @@ import xml.etree.ElementTree as ET
 
 from .command import Command
 from ..db.nodes.string import String
+from ..db.nodes.table import Table
 
 
 class Script:
-    def __init__(self, f):
-        self.string = String(f).value
-        self.commands = [Command(string) for string in self.string.split("\n")]
+    def __init__(self, script: str, locale: Table):
+        self.script = script
+        self.commands = [Command(string, locale) for string in self.script.split("\n")]
 
     def xml(self):
         element = ET.Element("Script")

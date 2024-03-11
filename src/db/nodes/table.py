@@ -19,3 +19,10 @@ class Table:
             Uint(len(self.value)).fbs()
             + b"".join(item.fbs() for item in self.value)
         )
+
+    def get_text(self, uid):
+        for row in self.value:
+            if row.uid.value == int(uid, 16):
+                return row.cells[0].item.value.replace("\0", "")
+        print(f"Malformed DB: text uid {uid} missing")
+        return self.value[0].cells[0].item.value.replace("\0", "")

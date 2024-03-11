@@ -26,3 +26,6 @@ class Uuid:
             self.uid.fbs()
             + self.type.fbs()
         )
+
+    def hex(self):
+        return self.uid.hex()

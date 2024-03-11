@@ -24,6 +24,22 @@ def write_fbs(table: IndexTable | Table, path: Path):
     with open(path, 'wb') as f:
         f.write(table.fbs())
 
+def export_scripts_as_toml(tables):
+    (BUILD_PATH / "scripts").mkdir(exist_ok=True)
+    for row in tables[5].value:
+        script = {
+            "uid": row.uid.hex(),
+            "name": row.cells[0].item.uid.hex(),
+            "Script1": Script(row.cells[1].item.value[:-1], tables[6]).toml(),
+            "Script2": Script(row.cells[2].item.value[:-1], tables[6]).toml(),
+            "Script3": Script(row.cells[3].item.value[:-1], tables[6]).toml(),
+            "Script4": Script(row.cells[4].item.value[:-1], tables[6]).toml(),
+            "Script5": Script(row.cells[5].item.value[:-1], tables[6]).toml(),
+        }
+        filename = row.cells[-1].item.value.replace('\0', '')
+        with open((BUILD_PATH / "scripts" / f"{filename}.toml"), "wb") as f:
+            tomli_w.dump(script, f, multiline_strings=True)
+
 if __name__ == "__main__":
     # DATA_PATH = Path("../Zanzarah/Data/")
 
@@ -41,22 +57,7 @@ if __name__ == "__main__":
     #         if cell.datatype.value == 0:
     #             cell.item.value = cell.item.value.upper()
 
-
-    (BUILD_PATH / "scripts").mkdir(exist_ok=True)
-    for row in tables[5].value:
-
-        script = {
-            "uid": hex(row.uid.value).upper()[2:],
-            "name": hex(row.cells[0].item.uid.value).upper()[2:],
-            "Script1": Script(row.cells[1].item.value[:-1]).toml(),
-            "Script2": Script(row.cells[2].item.value[:-1]).toml(),
-            "Script3": Script(row.cells[3].item.value[:-1]).toml(),
-            "Script4": Script(row.cells[4].item.value[:-1]).toml(),
-            "Script5": Script(row.cells[5].item.value[:-1]).toml(),
-        }
-        filename = row.cells[-1].item.value.replace('\0', '')
-        with open((BUILD_PATH / "scripts" / f"{filename}.toml"), "wb") as f:
-            tomli_w.dump(script, f, multiline_strings=True)
+    export_scripts_as_toml(tables)
 
 
     for table_id, table in tables.items():

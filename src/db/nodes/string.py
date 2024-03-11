@@ -10,7 +10,6 @@ ENCODING = "cp1251"
 
 class String:
     def __init__(self, f):
-
         if isinstance(f, io.IOBase):
             # pascal-like. the first 4 bytes are string length. not null terminated.
             length = Uint(f).value

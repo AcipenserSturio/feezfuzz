@@ -25,3 +25,6 @@ class Uint:
 
     def fbs(self):
         return struct.pack("<I", self.value)
+
+    def hex(self):
+        return hex(self.value).upper()[2:]

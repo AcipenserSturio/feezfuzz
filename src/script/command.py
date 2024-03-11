@@ -1,15 +1,32 @@
+import re
 import xml.etree.ElementTree as ET
 
 from .instructions import INSTRUCTIONS
 
 
-def Uid(x):
+def Text(x, locale):
     int(x, 16) # check if string is hex value
+    text = locale.get_text(x)
+    sentences = re.split(r"(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s", text)
+    if not len(re.findall(r"[\.\?\!] ", text)):
+        return f"<{' '.join(sentences)}>"
+    sentences = "\n    ".join(sentences)
+    return f"<\n    {sentences}\n>"
+
+
+def Uid(x):
+    try:
+        int(x, 16) # check if string is hex value
+    except ValueError:
+        print(f"Malformed DB: {x} is not a valid UID")
     return x
 
 
 def Int(x):
-    # int(x) # check if string is int
+    try:
+        int(x) # check if string is int
+    except ValueError:
+        print(f"Malformed DB: {x} is not an integer")
     return x
 
 
@@ -18,19 +35,20 @@ def String(x):
 
 
 class Command:
-    def __init__(self, string):
+    def __init__(self, string, locale):
+        self.locale = locale
         if string.replace("\0", ""):
             self.arguments = string.split(".")
             command_name = self.arguments.pop(0)
             if len(command_name) != 1:
-                print(f"Warning: malformed command {string}: command {command_name.encode()} not a single char  ")
+                print(f"Malformed DB: command {string.encode()}: command name not a single char")
             arglen, self.instruction = INSTRUCTIONS[command_name[0]]
 
             if len(self.arguments) != arglen:
                 # Suppress warnings for commands of format "J.textid":
                 # they are used extensively by vanilla
                 if (command_name != "J" and len(self.arguments) != 1):
-                    print(f"Warning: malformed command {string}: {len(self.arguments)} args given, {arglen} expected")
+                    print(f"Malformed DB: command {string.encode()}: {len(self.arguments)} args given, {arglen} expected")
                 self.arguments.extend(["0", "0", "0"])
 
             self.arguments = self.parse_args(self.instruction, self.arguments)
@@ -40,13 +58,14 @@ class Command:
             self.instruction = None
 
     def parse_args(self, instruction, args):
+        # print(self.instruction, self.arguments)
         match instruction:
             case "say":
-                return [Uid(args.pop(0)), Int(args.pop(0))]
+                return [Text(args.pop(0), self.locale), Int(args.pop(0))]
             case "setModel":
                 return [String(args.pop(0))]
             case "choice":
-                return [Int(args.pop(0)), Uid(args.pop(0))]
+                return [Int(args.pop(0)), Text(args.pop(0), self.locale)]
             case "waitForUser":
                 return []
             case "label":
@@ -120,7 +139,7 @@ class Command:
             case "beginIf_global":
                 return [Int(args.pop(0)), Int(args.pop(0))] # unclear
             case "talk":
-                return [Uid(args.pop(0))]
+                return [Text(args.pop(0), self.locale)]
             case "goto":
                 return [Int(args.pop(0))]
             case "gotoRandomLabel":
@@ -128,14 +147,14 @@ class Command:
             # case "ask":
             #     return  # What even is ask?
             case "chafferWizForms":
-                return [Uid(args.pop(0)), Uid(args.pop(0)), Uid(args.pop(0))]
+                return [Text(args.pop(0), self.locale), Text(args.pop(0), self.locale), Text(args.pop(0), self.locale)]
             case "setNpcType":
                 return [Int(args.pop(0))]
             case "deployNpcAtTrigger":
                 if args[1] in ("0", "1"):
-                    return [Int(args.pop(0)), Uid(args.pop(0))]
+                    return [Int(args.pop(0)), Int(args.pop(0))]
                 else:
-                    return [Uid(args.pop(0)), Uid(args.pop(0))]
+                    return [Int(args.pop(0)), Uid(args.pop(0))]
             case "delay":
                 return [Int(args.pop(0))]
             case "gotoLabelByRandom":
