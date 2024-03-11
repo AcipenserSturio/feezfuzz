@@ -27,3 +27,10 @@ class Level:
         element.append(ET.Element("Nibble", text=f"{SLOT_NAMES[self.slot]}"))
         element.append(self.level.xml())
         return element
+
+    def fbs(self):
+        return (
+            Byte(self.first & self.second << 4).fbs()
+            + Byte(self.third & self.slot << 4).fbs()
+            + self.level.fbs()
+        )

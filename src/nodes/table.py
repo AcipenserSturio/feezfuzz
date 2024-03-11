@@ -13,3 +13,9 @@ class Table:
         for item in self.value:
             element.append(item.xml())
         return element
+
+    def fbs(self):
+        return (
+            Uint(len(self.value)).fbs()
+            + b"".join(item.fbs() for item in self.value)
+        )

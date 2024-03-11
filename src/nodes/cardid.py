@@ -15,3 +15,10 @@ class CardId:
         element = ET.Element("CardId", attrib={"type": f"{CARD_TYPES[self.type.value]}"})
         element.append(self.id.xml())
         return element
+
+    def fbs(self):
+        return (
+            Byte(0).fbs()
+            + self.type.fbs()
+            + self.id.fbs()
+        )

@@ -14,3 +14,10 @@ class Row:
         for item in self.cells:
             element.append(item.xml())
         return element
+
+    def fbs(self):
+        return (
+            self.uid.fbs()
+            + Uint(len(self.cells)).fbs()
+            + b"".join(item.fbs() for item in self.cells)
+        )

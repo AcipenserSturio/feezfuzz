@@ -16,8 +16,13 @@ class Uuid:
         else:
             raise TypeError(type(f))
 
-
     def xml(self):
         element = ET.Element("Uuid", attrib={"type": f"{UUID_TYPES[self.type.value]}"})
         element.text = f"{self.uid.value}"
         return element
+
+    def fbs(self):
+        return (
+            self.uid.fbs()
+            + self.type.fbs()
+        )

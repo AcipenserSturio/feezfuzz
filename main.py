@@ -17,6 +17,9 @@ def write_xml(table: IndexTable | Table, path: Path):
     ET.indent(tree, space = "  ")
     tree.write(path, encoding="utf8")
 
+def write_fbs(table: IndexTable | Table, path: Path):
+    with open(path, 'wb') as f:
+        f.write(table.fbs())
 
 if __name__ == "__main__":
     # DATA_PATH = Path("../Zanzarah/Data/")
@@ -25,6 +28,11 @@ if __name__ == "__main__":
     BUILD_PATH = Path("./build")
     BUILD_PATH.mkdir(exist_ok=True)
 
+    tables = {}
     for filepath in DATA_PATH.glob("*.fbs"):
-        table = read_fbs(filepath)
-        write_xml(table, BUILD_PATH / (filepath.stem + ".xml"))
+        table_id = int(filepath.stem[-1])
+        tables[table_id] = read_fbs(filepath)
+
+    for table_id, table in tables.items():
+        write_xml(table, BUILD_PATH / f"_fb0x0{table_id}.xml")
+        write_fbs(table, BUILD_PATH / f"_fb0x0{table_id}.fbs")

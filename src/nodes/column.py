@@ -13,3 +13,9 @@ class Column:
         element = ET.Element("Column", attrib={"type": f"{self.type.value}"})
         element.append(self.name.xml())
         return element
+
+    def fbs(self):
+        return (
+            self.type.fbs()
+            + self.name.fbs()
+        )

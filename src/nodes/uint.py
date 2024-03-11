@@ -13,6 +13,8 @@ class Uint:
             except ValueError:
                 self.value = 0
                 print(f"Warning: Malformed integer: {f}")
+        elif isinstance(f, int):
+            self.value = f
         else:
             raise TypeError(type(f))
 
@@ -20,3 +22,6 @@ class Uint:
         element = ET.Element("Uint")
         element.text = f"{self.value}"
         return element
+
+    def fbs(self):
+        return struct.pack("<I", self.value)

@@ -10,3 +10,6 @@ class Ushort:
         element = ET.Element("Ushort")
         element.text = f"{self.value}"
         return element
+
+    def fbs(self):
+        return struct.pack("<H", self.value)
