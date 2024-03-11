@@ -6,7 +6,9 @@ from src.nodes.table import Table
 
 
 if __name__ == "__main__":
-    DATA_PATH = Path("../Zanzarah/Data/")
+    # DATA_PATH = Path("../Zanzarah/Data/")
+
+    DATA_PATH = Path("../feezfuzz additions/unbended new/")
     BUILD_PATH = Path("./build")
     BUILD_PATH.mkdir(exist_ok=True)
 

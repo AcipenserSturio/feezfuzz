@@ -11,7 +11,7 @@ class String:
         if isinstance(f, io.IOBase):
             # pascal-like. the first 4 bytes are string length. not null terminated.
             length = Uint(f).value
-            self.value = struct.unpack(f"<{length}s", f.read(length))[0].decode("cp1252", "replace")
+            self.value = struct.unpack(f"<{length}s", f.read(length))[0].decode("cp1251", "replace")
         elif isinstance(f, str):
             self.value = f
         else:
