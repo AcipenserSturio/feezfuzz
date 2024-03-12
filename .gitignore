@@ -1,3 +1,6 @@
+# PDM pointing at a .venv
+.pdm-python
+
 # Builds of Data files
 ./build/
 

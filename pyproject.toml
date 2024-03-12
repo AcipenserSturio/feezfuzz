@@ -1,0 +1,24 @@
+[project]
+name = "feezfuzz"
+version = "0.1.0"
+description = "A WIP parser for Zanzarah's Data files."
+authors = [
+    {name = "AcipenserSturio", email = "AcipenserSturio@users.noreply.github.com"},
+]
+dependencies = [
+    "tomli>=2.0.1",
+    "tomli-w>=1.0.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.scripts]
+build = "python -m feezfuzz"

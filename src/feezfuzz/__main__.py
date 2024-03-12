@@ -4,10 +4,10 @@ import xml.etree.ElementTree as ET
 import tomli
 import tomli_w
 
-from src.db.nodes.indextable import IndexTable
-from src.db.nodes.table import Table
-from src.db.nodes.row import Row
-from src.script.script import Script
+from .db.nodes.indextable import IndexTable
+from .db.nodes.table import Table
+from .db.nodes.row import Row
+from .script.script import Script
 
 
 def read_fbs(path: Path) -> IndexTable | Table:
