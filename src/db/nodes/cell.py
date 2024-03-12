@@ -13,22 +13,30 @@ from ..enums import (
 
 
 class Cell:
-    def __init__(self, f):
-        self.datatype = Uint(f)
-        self.index = Uint(f)
-        self.item = self.get_item(f)
+    def __init__(self, datatype, index, item):
+        self.datatype = datatype
+        self.index = index
+        self.item = item
 
-    def get_item(self, f):
-        match self.datatype.value:
+    @classmethod
+    def from_fbs(cls, f):
+        datatype = Uint(f)
+        index = Uint(f)
+        item = Cell.get_item(datatype, index, f)
+        return cls(datatype, index, item)
+
+    @staticmethod
+    def get_item(datatype, index, f):
+        match datatype.value:
             case 0:
                 # if "Script" in COLUMN_NAMES[self.index.value]:
                 #     return Script(f)
                 return String(f)
             case 1:
                 assert Uint(f).value == 4
-                if "Level" in COLUMN_NAMES[self.index.value]:
+                if "Level" in COLUMN_NAMES[index.value]:
                     return Level(f)
-                if "CardId" == COLUMN_NAMES[self.index.value]:
+                if "CardId" == COLUMN_NAMES[index.value]:
                     return CardId(f)
                 return Uint(f)
             case 3:

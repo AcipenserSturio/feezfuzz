@@ -5,8 +5,14 @@ from .uint import Uint
 
 
 class Table:
-    def __init__(self, f):
-        self.value = [Row(f) for index in range(Uint(f).value)]
+    def __init__(self, value = list()):
+        self.value = value
+
+    @classmethod
+    def from_fbs(cls, f):
+        length = Uint(f)
+        value = [Row.from_fbs(f) for index in range(length.value)]
+        return cls(value)
 
     def xml(self):
         element = ET.Element("Table")
@@ -26,3 +32,6 @@ class Table:
                 return row.cells[0].item.value.replace("\0", "")
         print(f"Malformed DB: text uid {uid} missing")
         return self.value[0].cells[0].item.value.replace("\0", "")
+
+    def add(self, row):
+        self.value.append(row)

@@ -18,7 +18,7 @@ class Uuid:
 
     def xml(self):
         element = ET.Element("Uuid", attrib={"type": f"{UUID_TYPES[self.type.value]}"})
-        element.text = f"{self.uid.value}"
+        element.text = f"{self.uid.hex()}"
         return element
 
     def fbs(self):

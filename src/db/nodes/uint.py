@@ -27,4 +27,4 @@ class Uint:
         return struct.pack("<I", self.value)
 
     def hex(self):
-        return hex(self.value).upper()[2:]
+        return hex(self.value).upper()[2:].zfill(8)
