@@ -8,15 +8,14 @@
 
 * Python 3.10 (lower versions might work, but are not tested)
 
-* PDM (you can install it with `python -m pip install pdm`)
-
 ## Usage
 
 Currently available scripts are work in progress - they may be clunky to use.
 
 ```
-pdm install
-pdm run build
+python -m pip install pdm
+python -m pdm install
+python -m pdm run build
 ```
 
 Make sure to change the path to Zanzarah folder to whatever your path is.
