@@ -25,8 +25,9 @@ class String:
         return element
 
     def fbs(self):
-        length = len(self.value)
+        value = self.value + "\0"
+        length = len(value)
         return (
             Uint(length).fbs()
-            + struct.pack(f"<{length}s", self.value.encode(ENCODING))
+            + struct.pack(f"<{length}s", value.encode(ENCODING))
         )
