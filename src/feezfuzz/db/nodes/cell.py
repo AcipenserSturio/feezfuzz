@@ -10,6 +10,7 @@ from ..enums import (
     COLUMN_NAMES,
     DATA_TYPES,
 )
+from ...script.script import Script
 
 
 class Cell:
@@ -27,10 +28,14 @@ class Cell:
 
     @staticmethod
     def get_item(datatype, index, f):
+        if index.value >= len(COLUMN_NAMES):
+            print(f"Malformed DB: column index {index.value}")
+            index.value = 0
+
         match datatype.value:
             case 0:
-                # if "Script" in COLUMN_NAMES[self.index.value]:
-                #     return Script(f)
+                if "Script" in COLUMN_NAMES[index.value]:
+                    return Script(String(f).value)
                 return String(f)
             case 1:
                 assert Uint(f).value == 4

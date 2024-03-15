@@ -11,8 +11,8 @@ from .script.script import Script
 
 
 def read_fbs(path: Path) -> IndexTable | Table:
-        with open(filepath, "rb") as f:
-            if filepath.stem == "_fb0x00":
+        with open(path, "rb") as f:
+            if path.stem == "_fb0x00":
                 return IndexTable(f)
             return Table.from_fbs(f)
 
@@ -28,15 +28,19 @@ def write_fbs(table: IndexTable | Table, path: Path):
 
 def export_scripts_as_toml(tables):
     (BUILD_PATH / "scripts").mkdir(exist_ok=True)
-    for row in tables[5].value:
+
+    npcs = tables[5]
+    locale = tables[6]
+
+    for row in npcs.value:
         script = {
             "uid": row.uid.hex(),
             "name": row.cells[0].item.uid.hex(),
-            "Script1": Script(row.cells[1].item.value[:-1], tables[6]).toml(),
-            "Script2": Script(row.cells[2].item.value[:-1], tables[6]).toml(),
-            "Script3": Script(row.cells[3].item.value[:-1], tables[6]).toml(),
-            "Script4": Script(row.cells[4].item.value[:-1], tables[6]).toml(),
-            "Script5": Script(row.cells[5].item.value[:-1], tables[6]).toml(),
+            "Script1": row.cells[1].item.toml(locale),
+            "Script2": row.cells[2].item.toml(locale),
+            "Script3": row.cells[3].item.toml(locale),
+            "Script4": row.cells[4].item.toml(locale),
+            "Script5": row.cells[5].item.toml(locale),
         }
         filename = row.cells[-1].item.value.replace('\0', '')
         with open((BUILD_PATH / "scripts" / f"{filename}.toml"), "wb") as f:
@@ -68,16 +72,29 @@ if __name__ == "__main__":
         table_id = int(filepath.stem[-1])
         tables[table_id] = read_fbs(filepath)
 
+    for table_id, table in tables.items():
+        write_xml(table, BUILD_PATH / f"_fb0x0{table_id}.xml")
+        write_fbs(table, BUILD_PATH / f"_fb0x0{table_id}.fbs")
+
     # for row in tables[6].value:
     #     for cell in row.cells:
     #         if cell.datatype.value == 0:
     #             cell.item.value = cell.item.value.upper()
 
     export_scripts_as_toml(tables)
-    tables[5], tables[6] = toml_to_fbs()
+    npcs, locale = toml_to_fbs()
 
+    write_fbs(npcs, BUILD_PATH / f"_fb0x05.fbs")
+    write_xml(npcs, BUILD_PATH / f"_fb0x05.xml")
 
+    write_fbs(locale, BUILD_PATH / f"_fb0x06.fbs")
+    write_xml(locale, BUILD_PATH / f"_fb0x06.xml")
 
-    for table_id, table in tables.items():
-        write_xml(table, BUILD_PATH / f"_fb0x0{table_id}.xml")
-        write_fbs(table, BUILD_PATH / f"_fb0x0{table_id}.fbs")
+    # Test built fbs files:
+    table = read_fbs(BUILD_PATH / f"_fb0x05.fbs")
+    write_fbs(table, BUILD_PATH / f"_fb0x05.fbs")
+    write_xml(table, BUILD_PATH / f"_fb0x05.xml")
+
+    table = read_fbs(BUILD_PATH / f"_fb0x06.fbs")
+    write_fbs(table, BUILD_PATH / f"_fb0x06.fbs")
+    write_xml(table, BUILD_PATH / f"_fb0x06.xml")
