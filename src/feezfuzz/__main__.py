@@ -32,7 +32,7 @@ def export_scripts_as_toml(tables):
     npcs = tables[5]
     locale = tables[6]
 
-    for row in npcs.value:
+    for row in npcs.rows:
         script = {
             "uid": row.uid.hex(),
             "name": row.cells[0].item.uid.hex(),

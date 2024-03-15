@@ -13,7 +13,11 @@ class String:
         if isinstance(f, io.IOBase):
             # pascal-like. the first 4 bytes are string length. not null terminated.
             length = Uint(f).value
-            self.value = struct.unpack(f"<{length}s", f.read(length))[0].decode(ENCODING, "replace")
+            self.value = (
+                struct.unpack(f"<{length}s", f.read(length))[0]
+                .decode(ENCODING, "replace")
+                .replace("\0", "")
+            )
         elif isinstance(f, str):
             self.value = f
         else:
@@ -21,7 +25,7 @@ class String:
 
     def xml(self):
         element = ET.Element("String")
-        element.text = self.value.replace('\0', '')
+        element.text = self.value
         return element
 
     def fbs(self):
