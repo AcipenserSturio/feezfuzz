@@ -1,7 +1,7 @@
 import re
 import xml.etree.ElementTree as ET
 
-from .instructions import INSTRUCTIONS
+from ..enums import INSTRUCTIONS
 
 
 def Text(x, locale):

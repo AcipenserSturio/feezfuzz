@@ -3,8 +3,8 @@ import xml.etree.ElementTree as ET
 from .cell import Cell
 from .uint import Uint
 from .uuid import Uuid
+from .script import Script
 from .string import String
-from ...script.script import Script
 
 
 class Row:

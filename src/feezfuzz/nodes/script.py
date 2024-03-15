@@ -2,10 +2,10 @@ import re
 import xml.etree.ElementTree as ET
 
 from .command import Command
-from ..db.nodes.string import String
-from ..db.nodes.uint import Uint
-from ..db.nodes.uuid import Uuid
-from .instructions import INSTRUCTIONS
+from .string import String
+from .uint import Uint
+from .uuid import Uuid
+from ..enums import INSTRUCTIONS
 
 
 class Script:
