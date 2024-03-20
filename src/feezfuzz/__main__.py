@@ -34,14 +34,15 @@ def export_scripts_as_toml(tables):
 
     for row in npcs.rows:
         script = {
-            "uid": row.uid.hex(),
-            "name": row.cells[0].item.uid.hex(),
-            "Script1": row.cells[1].item.toml(locale),
-            "Script2": row.cells[2].item.toml(locale),
-            "Script3": row.cells[3].item.toml(locale),
-            "Script4": row.cells[4].item.toml(locale),
-            "Script5": row.cells[5].item.toml(locale),
+            "UID": row.uid.hex(),
+            "Name": row.cells[0].item.uid.hex(),
+            "TriggerScript": row.cells[1].item.toml(locale),
+            "InitScript": row.cells[2].item.toml(locale),
+            "UpdateScript": row.cells[3].item.toml(locale),
+            "DefeatedScript": row.cells[4].item.toml(locale),
+            "VictoriousScript": row.cells[5].item.toml(locale),
         }
+        script = {k: v for k, v in script.items() if v}
         filename = row.cells[-1].item.value.replace('\0', '')
         with open((BUILD_PATH / "scripts" / f"{filename}.toml"), "wb") as f:
             tomli_w.dump(script, f, multiline_strings=True)

@@ -38,15 +38,22 @@ class Row:
             data: dict,
             locale: "Table",
         ):
+        script = {
+            1: data["TriggerScript"] if "TriggerScript" in data else "",
+            2: data["InitScript"] if "InitScript" in data else "",
+            3: data["UpdateScript"] if "UpdateScript" in data else "",
+            4: data["DefeatedScript"] if "DefeatedScript" in data else "",
+            5: data["VictoriousScript"] if "VictoriousScript" in data else "",
+        }
         return cls(
-            Uuid(data["uid"]).uid,
+            Uuid(data["UID"]).uid,
             [
-                Cell(Uint(3), Uint(3), Uuid(data["name"])),
-                Cell(Uint(0), Uint(24), Script.from_toml(data["Script1"], locale, data["name"])),
-                Cell(Uint(0), Uint(25), Script.from_toml(data["Script2"], locale, data["name"])),
-                Cell(Uint(0), Uint(26), Script.from_toml(data["Script3"], locale, data["name"])),
-                Cell(Uint(0), Uint(27), Script.from_toml(data["Script4"], locale, data["name"])),
-                Cell(Uint(0), Uint(28), Script.from_toml(data["Script5"], locale, data["name"])),
+                Cell(Uint(3), Uint(3), Uuid(data["Name"])),
+                Cell(Uint(0), Uint(24), Script.from_toml(script[1], locale, data["Name"])),
+                Cell(Uint(0), Uint(25), Script.from_toml(script[2], locale, data["Name"])),
+                Cell(Uint(0), Uint(26), Script.from_toml(script[3], locale, data["Name"])),
+                Cell(Uint(0), Uint(27), Script.from_toml(script[4], locale, data["Name"])),
+                Cell(Uint(0), Uint(28), Script.from_toml(script[5], locale, data["Name"])),
                 Cell(Uint(0), Uint(19), String(filename)),
             ],
         )
