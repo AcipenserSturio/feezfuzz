@@ -21,4 +21,4 @@ build-backend = "pdm.backend"
 distribution = true
 
 [tool.pdm.scripts]
-build = "python -m feezfuzz"
+feezfuzz = "python -m feezfuzz"

@@ -22,15 +22,17 @@ def write_xml(table: IndexTable | Table, path: Path):
     ET.indent(tree, space = "  ")
     tree.write(path, encoding="utf8")
 
+
 def write_fbs(table: IndexTable | Table, path: Path):
-    with open(path, 'wb') as f:
+    with open(path, "wb") as f:
         f.write(table.fbs())
 
-def export_scripts_as_toml(build_path, tables):
 
+def write_toml(path: Path, tables: dict[int, Table | IndexTable]):
     npcs = tables[5]
     locale = tables[6]
 
+    print(f"Writing {len(npcs.rows)} TOML files")
     for row in npcs.rows:
         script = {
             "UID": row.uid.hex(),
@@ -43,14 +45,21 @@ def export_scripts_as_toml(build_path, tables):
         }
         script = {k: v for k, v in script.items() if v}
         filename = row.cells[-1].item.value.replace('\0', '')
-        with open(build_path / f"{filename}.toml", "wb") as f:
+        with open(path / f"{filename}.toml", "wb") as f:
             tomli_w.dump(script, f, multiline_strings=True)
 
-def toml_to_fbs(build_path):
+
+def get_tomls(path) -> list[Path]:
+    return list(sorted(path.glob("**/*.toml")))
+
+
+def read_toml(path) -> tuple[Table, Table]:
     locale = Table()
     npcs = Table()
 
-    for filepath in build_path.glob("*.toml"):
+    files = get_tomls(path)
+    print(f"Reading {len(files)} TOML files")
+    for filepath in files:
         with open(filepath, "rb") as f:
             npcs.add(Row.from_script_toml(
                 filepath.stem,
@@ -59,40 +68,48 @@ def toml_to_fbs(build_path):
             ))
     return npcs, locale
 
-def build(data_path: Path):
-    BUILD_PATH = data_path / "build"
-    BUILD_PATH.mkdir(exist_ok=True)
-    SCRIPT_PATH = BUILD_PATH / "scripts"
-    SCRIPT_PATH.mkdir(exist_ok=True)
 
+def read_tables(path: Path) -> dict[int, Table | IndexTable]:
     tables = {}
-    for filepath in data_path.glob("*.fbs"):
+    for filepath in sorted(path.glob("*.fbs")):
+        print(f"Reading {filepath}")
         table_id = int(filepath.stem[-1])
         tables[table_id] = read_fbs(filepath)
+    return tables
 
-    for table_id, table in tables.items():
-        write_xml(table, BUILD_PATH / f"_fb0x0{table_id}.xml")
-        write_fbs(table, BUILD_PATH / f"_fb0x0{table_id}.fbs")
 
-    # for row in tables[6].value:
-    #     for cell in row.cells:
-    #         if cell.datatype.value == 0:
-    #             cell.item.value = cell.item.value.upper()
+def build(path: Path, fbs: bool, xml: bool, toml: bool, test: bool):
+    if test:
+        fbs, xml, toml = True, True, True
 
-    export_scripts_as_toml(SCRIPT_PATH, tables)
-    npcs, locale = toml_to_fbs(SCRIPT_PATH)
+    FBS_IN = path
+    TOML_IN = path / "scripts"
+    FBS_OUT = path / "build"
+    TOML_OUT = path / "build" / "scripts"
 
-    write_fbs(npcs, BUILD_PATH / f"_fb0x05.fbs")
-    write_xml(npcs, BUILD_PATH / f"_fb0x05.xml")
+    tables = read_tables(FBS_IN)
 
-    write_fbs(locale, BUILD_PATH / f"_fb0x06.fbs")
-    write_xml(locale, BUILD_PATH / f"_fb0x06.xml")
+    if get_tomls(TOML_IN):
+        print("Found TOML scripts, reading them as _fb0x05.fbs and _fb0x06.fbs")
+        tables[5], tables[6] = read_toml(TOML_IN)
 
-    # Test built fbs files:
-    table = read_fbs(BUILD_PATH / f"_fb0x05.fbs")
-    write_fbs(table, BUILD_PATH / f"_fb0x05.fbs")
-    write_xml(table, BUILD_PATH / f"_fb0x05.xml")
+    if fbs:
+        FBS_OUT.mkdir(exist_ok=True)
+        for index, table in tables.items():
+            out = FBS_OUT / f"_fb0x0{index}.fbs"
+            print(f"Writing {out}")
+            write_fbs(table, out)
+    if xml:
+        FBS_OUT.mkdir(exist_ok=True)
+        for index, table in tables.items():
+            out = FBS_OUT / f"_fb0x0{index}.xml"
+            print(f"Writing {out}")
+            write_xml(table, out)
+    if toml:
+        TOML_OUT.mkdir(exist_ok=True)
+        write_toml(TOML_OUT, tables)
 
-    table = read_fbs(BUILD_PATH / f"_fb0x06.fbs")
-    write_fbs(table, BUILD_PATH / f"_fb0x06.fbs")
-    write_xml(table, BUILD_PATH / f"_fb0x06.xml")
+    if test:
+        print("Check tables are not broken")
+        read_tables(FBS_OUT)
+
