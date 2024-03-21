@@ -49,6 +49,9 @@ class Table:
         self.rows.append(row)
 
     def register_text(self, text: str, npc_id: int) -> Uuid:
+        for row in self.rows:
+            if row.cells[0].item.value == text:
+                return row.uid
         uuid = self.new_uid()
         self.add(Row.new_text(uuid.uid, text, npc_id))
         return uuid
