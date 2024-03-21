@@ -10,15 +10,15 @@
 
 ## Usage
 
-Currently available scripts are work in progress - they may be clunky to use.
-
 ```
-python -m pip install pdm
-python -m pdm install
-python -m pdm run build
+python -m pip install feezfuzz
+cd /your/path/to/Zanzarah/Data/
+python -m feezfuzz
 ```
 
 Make sure to change the path to Zanzarah folder to whatever your path is.
+
+Be aware that the currently available scripts are WIP.
 
 ## License
 
