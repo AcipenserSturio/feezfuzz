@@ -87,6 +87,8 @@ def build(path: Path, fbs: bool, xml: bool, toml: bool, test: bool):
     FBS_OUT = path / "build"
     TOML_OUT = path / "build" / "scripts"
 
+    print(f"Building Data files in {path.resolve()}")
+
     tables = read_tables(FBS_IN)
 
     if get_tomls(TOML_IN):
