@@ -66,7 +66,7 @@ INSTRUCTIONS = [
     ["c",  "lookAtTrigger",          ["int", "int"]         ],
     ["d",  "ifTriggerIsEnabled",     ["int"]                ],
     ["e",  "playSound",              ["int"]                ],
-    ["f",  "playInArena",            ["int"]                ],
+    ["f",  "playInArena",            ["int", "int"]         ], # second arg unused
     ["g",  "startActorEffect",       ["int"]                ],
     ["h",  "endActorEffect",         []                     ],
     ["i",  "createSceneObjects",     ["int"]                ],
