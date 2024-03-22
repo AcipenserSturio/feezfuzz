@@ -33,6 +33,7 @@ def write_toml(path: Path, tables: dict[int, Table | IndexTable]):
     locale = tables[6]
 
     print(f"Writing {len(npcs.rows)} TOML files")
+    filenames = set()
     for row in npcs.rows:
         script = {
             "UID": row.uid.hex(),
@@ -45,6 +46,12 @@ def write_toml(path: Path, tables: dict[int, Table | IndexTable]):
         }
         script = {k: v for k, v in script.items() if v}
         filename = row.cells[-1].item.value.replace('\0', '')
+
+        # Make sure no filename collisions happen!
+        while filename.upper() in filenames:
+            filename += "_"
+        filenames.add(filename.upper())
+
         with open(path / f"{filename}.toml", "wb") as f:
             tomli_w.dump(script, f, multiline_strings=True)
 
