@@ -5,6 +5,7 @@ from .row import Row
 from .uint import Uint
 from .uuid import Uuid
 
+from ..io_utils import bytes_remaining
 
 class Table:
     def __init__(self, rows=None):
@@ -14,9 +15,14 @@ class Table:
 
     @classmethod
     def from_fbs(cls, f):
-        return cls(
-            [Row.from_fbs(f) for index in range(Uint(f).value)]
-        )
+        rows = []
+        length = Uint(f).value
+        for index in range(length):
+            if not bytes_remaining(f):
+                print(f"Malformed DB: {index} rows, {length} expected")
+                break
+            rows.append(Row.from_fbs(f))
+        return cls(rows)
 
     def xml(self):
         element = ET.Element("Table")
