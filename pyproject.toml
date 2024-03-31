@@ -1,6 +1,6 @@
 [project]
 name = "feezfuzz"
-version = "0.1.4"
+version = "0.1.4.1"
 description = "A WIP parser for Zanzarah's Data files."
 authors = [
     {name = "AcipenserSturio", email = "AcipenserSturio@users.noreply.github.com"},

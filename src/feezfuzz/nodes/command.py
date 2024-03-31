@@ -65,7 +65,7 @@ class Command:
 
         if string in SHORT:
             return string
-        raise ValueError(f"Malformed DB: {string} not a valid instruction")
+        raise ValueError(f"Malformed DB: {string.encode()} not a valid instruction")
 
     def parse_args(self):
         argtypes = ARGTYPES[self.instruction]

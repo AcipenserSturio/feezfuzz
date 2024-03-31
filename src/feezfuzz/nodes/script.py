@@ -10,7 +10,7 @@ from ..enums import INSTRUCTIONS
 
 class Script:
     def __init__(self, script: str):
-        self.script = script
+        self.script = script.replace("\r", "\n")
         self.commands = [Command(string) for string in self.script.strip().split("\n")]
 
     @classmethod
