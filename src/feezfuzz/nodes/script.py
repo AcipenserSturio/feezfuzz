@@ -9,9 +9,12 @@ from ..enums import INSTRUCTIONS
 
 
 class Script:
-    def __init__(self, script: str):
+    def __init__(self, script: str, longform: bool = False):
         self.script = script.replace("\r", "\n")
-        self.commands = [Command(string) for string in self.script.strip().split("\n")]
+        self.commands = [
+            Command(string, longform)
+            for string in self.script.strip().split("\n")
+        ]
 
     @classmethod
     def from_toml(cls, script: str, locale: "Table", npc_id: str):
@@ -19,7 +22,7 @@ class Script:
             text = text.group(0)
             uuid = locale.register_text(format_text(text), Uuid(npc_id).uid.value)
             script = re.sub(re.escape(text), uuid.hex(), script)
-        return cls(script)
+        return cls(script, longform=True)
 
     def xml(self):
         element = ET.Element("Script")

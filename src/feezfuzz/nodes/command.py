@@ -30,20 +30,21 @@ def String(x):
 
 
 
-LONG_TO_SHORT = {string: char   for (char, string, args) in INSTRUCTIONS}
+SHORT =         [char           for (char, string, args) in INSTRUCTIONS]
+LONG =          [string         for (char, string, args) in INSTRUCTIONS]
 SHORT_TO_LONG = {char: string   for (char, string, args) in INSTRUCTIONS}
-SHORT =         {char           for (char, string, args) in INSTRUCTIONS}
+LONG_TO_SHORT = {string: char   for (char, string, args) in INSTRUCTIONS}
 ARGTYPES =      {char: args     for (char, string, args) in INSTRUCTIONS}
 
 
 class Command:
-    def __init__(self, string):
+    def __init__(self, string, longform: bool = False):
         self.args = []
         self.instruction = None
 
         if string := string.replace("\0", ""):
             self.args = string.split(".")
-            self.instruction = self.parse_instruction(self.args.pop(0))
+            self.instruction = self.parse_instruction(self.args.pop(0), longform)
             arglen = len(ARGTYPES[self.instruction])
 
             if len(self.args) != arglen:
@@ -56,13 +57,25 @@ class Command:
             self.args = (self.args + ["0", "0", "0"])[:arglen]
             self.parse_args()
 
-    def parse_instruction(self, string: str) -> str:
-        if string in LONG_TO_SHORT:
+    def parse_instruction(self, string: str, longform: bool) -> str:
+        if string in LONG:
             return LONG_TO_SHORT[string]
-        elif len(string) != 1:
+
+        if longform:
+            # Instructions are supposed to be strings.
+            # An incorrect string is likely a typo or
+            # An upper/lowercase error.
+            longs_lower = [*map(str.lower, LONG)]
+            if string.lower() in longs_lower:
+                print(f"Malformed DB: command {string.encode()}: command name is capitalised incorrectly")
+                return SHORT[longs_lower.index(string.lower())]
+            raise ValueError(f"Malformed DB: {string.encode()}")
+
+        # Instructions are supposed to be characters.
+        # An incorrect string is likely a char + extra junk
+        if len(string) != 1:
             print(f"Malformed DB: command {string.encode()}: command name not a single char")
             string = string[0]
-
         if string in SHORT:
             return string
         raise ValueError(f"Malformed DB: {string.encode()} not a valid instruction")
