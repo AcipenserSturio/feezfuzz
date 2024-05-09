@@ -10,7 +10,7 @@ from ..enums import INSTRUCTIONS
 
 class Script:
     def __init__(self, script: str, longform: bool = False):
-        self.script = script.replace("\r", "\n").replace("\t", "    ")
+        self.script = script.replace("\r", "\n")
         self.commands = [
             Command(string, longform)
             for string in self.script.strip().split("\n")
@@ -18,6 +18,7 @@ class Script:
 
     @classmethod
     def from_toml(cls, script: str, locale: "Table", npc_id: str):
+        script = script.replace("\t", " ")
         while text := re.search("<.*?>", script, flags=re.DOTALL):
             text = text.group(0)
             uuid = locale.register_text(format_text(text), Uuid(npc_id).uid.value)
