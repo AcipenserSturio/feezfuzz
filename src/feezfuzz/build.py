@@ -38,11 +38,11 @@ def write_toml(path: Path, tables: dict[int, Table | IndexTable]):
         script = {
             "UID": row.uid.hex(),
             "Name": row.cells[0].item.uid.hex(),
-            "TriggerScript": row.cells[1].item.toml(locale),
-            "InitScript": row.cells[2].item.toml(locale),
-            "UpdateScript": row.cells[3].item.toml(locale),
-            "DefeatedScript": row.cells[4].item.toml(locale),
-            "VictoriousScript": row.cells[5].item.toml(locale),
+            "TriggerScript": row.cells[1].item.toml(locale) if isinstance(row.cells[1].item, Script) else Script(row.cells[1].item.value, longform=False).toml(locale),
+            "InitScript": row.cells[2].item.toml(locale) if isinstance(row.cells[2].item, Script) else Script(row.cells[2].item.value, longform=False).toml(locale),
+            "UpdateScript": row.cells[3].item.toml(locale) if isinstance(row.cells[3].item, Script) else Script(row.cells[3].item.value, longform=False).toml(locale),
+            "DefeatedScript": row.cells[4].item.toml(locale) if isinstance(row.cells[4].item, Script) else Script(row.cells[4].item.value, longform=False).toml(locale),
+            "VictoriousScript": row.cells[5].item.toml(locale) if isinstance(row.cells[5].item, Script) else Script(row.cells[5].item.value, longform=False).toml(locale),
         }
         script = {k: v for k, v in script.items() if v}
         filename = row.cells[-1].item.value.replace('\0', '')
