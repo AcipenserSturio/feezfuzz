@@ -11,7 +11,7 @@ def dir_path(path):
     raise argparse.ArgumentTypeError(f"{path} is not a valid path")
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         prog="Feezfuzz",
         description="A WIP build system for Zanzarah's Data files.",
@@ -49,3 +49,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     build(Path(args.path), args.fbs, args.xml, args.toml, args.test)
+
+
+if __name__ == "__main__":
+    main()
